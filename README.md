@@ -22,7 +22,7 @@ mvn -pl statistics-service-provider spring-boot:run
 
 # Documentation
 
-We can find documentation in the [docs](docs) folder. Public documentation is available at
+Public documentation is available at
 
 - Baeldung
   - [Kafka Basics](https://www.baeldung.com/apache-kafka)
