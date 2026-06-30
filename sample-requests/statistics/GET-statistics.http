@@ -1,0 +1,11 @@
+GET {{endpoint}}/statistics/customers
+Accept: application/json
+
+> {%
+
+  client.test('returns valid response', () => {
+    client.assert(response.status === 200, 'status code is 200');
+    client.assert(response.headers.valueOf('Content-Type') === 'application/json', 'content type is JSON');
+    client.assert(Array.isArray(response.body), 'body is an array');
+  });
+%}
