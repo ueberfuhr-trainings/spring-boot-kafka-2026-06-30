@@ -25,3 +25,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
       properties:
         "[spring.json.add.type.headers]": false
+application:
+  kafka:
+    customer-events:
+      topic: ${KAFKA_CUSTOMER_EVENTS_TOPIC_NAME:customer-events}

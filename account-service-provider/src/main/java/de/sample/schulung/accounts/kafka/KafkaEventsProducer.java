@@ -1,6 +1,5 @@
 package de.sample.schulung.accounts.kafka;
 
-import de.sample.schulung.accounts.domain.Customer;
 import de.sample.schulung.accounts.domain.events.CustomerCreatedEvent;
 import de.sample.schulung.accounts.domain.events.CustomerDeletedEvent;
 import de.sample.schulung.accounts.domain.events.CustomerReplacedEvent;
@@ -17,35 +16,32 @@ public class KafkaEventsProducer {
 
   private final KafkaTemplate<UUID, CustomerEventRecord> kafkaTemplate;
   private final CustomerEventRecordMapper mapper;
+  private final KafkaTargetProperties target;
 
-  @EventListener
-  public void handleCustomerCreated(CustomerCreatedEvent event){
-    final var payload = mapper.map(event);
+  private void send(CustomerEventRecord eventRecord) {
     kafkaTemplate.send(
-      "customer-events",
-      event.customer().getUuid(),
-      payload
+      target.getTopic(),
+      eventRecord.customerUuid(), // partition = message order
+      eventRecord
     );
   }
 
   @EventListener
-  public void handleCustomerReplaced(CustomerReplacedEvent event){
-    final var payload = mapper.map(event);
-    kafkaTemplate.send(
-      "customer-events",
-      event.customer().getUuid(),
-      payload
-    );
+  public void onCustomerCreated(CustomerCreatedEvent event) {
+    final var eventRecord = mapper.map(event);
+    send(eventRecord);
   }
 
   @EventListener
-  public void handleCustomerDeleted(CustomerDeletedEvent event){
-    final var payload = mapper.map(event);
-    kafkaTemplate.send(
-      "customer-events",
-      event.uuid(),
-      payload
-    );
+  public void onCustomerReplaced(CustomerReplacedEvent event) {
+    final var eventRecord = mapper.map(event);
+    send(eventRecord);
+  }
+
+  @EventListener
+  public void onCustomerDeleted(CustomerDeletedEvent event) {
+    final var eventRecord = mapper.map(event);
+    send(eventRecord);
   }
 
 }
