@@ -146,6 +146,7 @@ public @interface AutoConfigureKafkaEmbedded {
       for (String topic : configuration.topics()) {
         embeddedKafka.consumeFromAnEmbeddedTopic(
           consumer,
+          true,
           topic
         );
       }

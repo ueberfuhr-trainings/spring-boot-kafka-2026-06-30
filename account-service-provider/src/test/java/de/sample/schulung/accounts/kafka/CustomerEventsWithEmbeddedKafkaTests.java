@@ -23,7 +23,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
 
-@Disabled
 @SpringBootTest
 @AutoConfigureTestDatabase
 @EmbeddedKafka(
@@ -56,6 +55,7 @@ class CustomerEventsWithEmbeddedKafkaTests {
       .createConsumer();
     embeddedKafka.consumeFromAnEmbeddedTopic(
       consumer,
+      true,
       "customer-events"
     );
   }
