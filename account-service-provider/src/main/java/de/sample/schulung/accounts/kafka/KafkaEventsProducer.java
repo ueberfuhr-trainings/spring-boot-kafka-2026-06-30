@@ -15,27 +15,37 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class KafkaEventsProducer {
 
-  private final KafkaTemplate<UUID, Customer> kafkaTemplate;
+  private final KafkaTemplate<UUID, CustomerEventRecord> kafkaTemplate;
+  private final CustomerEventRecordMapper mapper;
 
   @EventListener
   public void handleCustomerCreated(CustomerCreatedEvent event){
-    System.out.println("Event!" + event);
-    // TODO: Key+Payload sinnvoll gewählt?
+    final var payload = mapper.map(event);
     kafkaTemplate.send(
       "customer-events",
       event.customer().getUuid(),
-      event.customer()
+      payload
     );
   }
 
   @EventListener
   public void handleCustomerReplaced(CustomerReplacedEvent event){
-    System.out.println("Event!" + event);
+    final var payload = mapper.map(event);
+    kafkaTemplate.send(
+      "customer-events",
+      event.customer().getUuid(),
+      payload
+    );
   }
 
   @EventListener
   public void handleCustomerDeleted(CustomerDeletedEvent event){
-    System.out.println("Event!" + event);
+    final var payload = mapper.map(event);
+    kafkaTemplate.send(
+      "customer-events",
+      event.uuid(),
+      payload
+    );
   }
 
 }
